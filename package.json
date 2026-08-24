@@ -8,14 +8,18 @@
     "test": "node --test tests/*.test.mjs",
     "audit:example": "node scripts/audit-traceability.mjs --stage realization examples/library-lending/analysis-model.json && node scripts/audit-balance.mjs examples/library-lending/analysis-model.json && node scripts/audit-drawio.mjs --type tfd --profile academic examples/library-lending/tfd-borrow.drawio && node scripts/audit-drawio.mjs --type dfd --profile academic examples/library-lending/dfd-context.drawio",
     "scan:portable": "node scripts/scan-portability.mjs .",
-    "validate:skills": "node scripts/validate-skills.mjs ."
+    "validate:skills": "node scripts/validate-skills.mjs .",
+    "validate:discovery": "skills add . --list"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22.20.0"
   },
   "license": "Apache-2.0",
   "dependencies": {
     "@xmldom/xmldom": "0.9.12",
     "ajv": "8.20.0"
+  },
+  "devDependencies": {
+    "skills": "1.5.23"
   }
 }

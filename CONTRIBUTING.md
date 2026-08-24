@@ -10,6 +10,7 @@ Contributions should improve traceability, validation, portability, or safety wi
 4. Add or update a failing fixture for every new validation rule.
 5. Run `npm test`, `npm run audit:example`, and `npm run scan:portable`.
 6. Explain whether a rule is universal, profile-specific, or project-specific.
+7. Keep `SKILL.md` compliant with the open Agent Skills specification and run `npm run validate:discovery`.
 
 ## Pull Requests
 

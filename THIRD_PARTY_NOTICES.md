@@ -2,6 +2,20 @@
 
 Structured MIS Skills contains original workflow instructions, templates, examples, and validation scripts. The Skills rely on the upstream projects identified below. Their code is not vendored in this repository and must be configured separately before the corresponding Skill is used.
 
+## Agent Skills Specification
+
+- Project: Agent Skills specification
+- Repository: https://github.com/agentskills/agentskills
+- License: Apache License 2.0 for code; CC-BY-4.0 for documentation
+- Use here: portable `SKILL.md` format and compatibility contract
+
+## Skills CLI
+
+- Project: Vercel Skills CLI
+- Repository: https://github.com/vercel-labs/skills
+- License: MIT License
+- Use here: pinned development dependency for cross-agent discovery validation and recommended user installation command
+
 ## Next AI Draw.io
 
 - Project: Next AI Draw.io

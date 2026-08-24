@@ -1,5 +1,5 @@
 {
-  "$schema": "../../schemas/analysis-model.schema.json",
+  "$schema": "../../skills/mis-analysis-modeling/assets/analysis-model.schema.json",
   "system": {
     "id": "library-lending",
     "name": "Library Lending Information System",

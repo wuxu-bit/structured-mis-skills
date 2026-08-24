@@ -2,7 +2,7 @@
 name: mis-analysis-modeling
 description: Use when an information-system analysis task combines business flow diagrams (TFD), layered data flow diagrams (DFD), complete data dictionaries, parent-child balance, or cross-artifact traceability. Trigger on 信息系统业务流程图, 数据流程图与数据字典一致性, TFD/DFD, 父子图平衡, and 结构化系统分析建模; do not trigger for generic draw.io, UML, architecture, or ordinary flowcharts.
 license: Apache-2.0
-compatibility: Requires a configured Next AI Draw.io MCP from DayuanJiang/next-ai-draw-io; Agent runtime with file access; Node.js 20+ for bundled validators.
+compatibility: Cross-platform Agent Skills format. Requires an MCP-capable client with Next AI Draw.io configured and file access; Node.js 22.20+ only for full-repository validators.
 metadata:
   author: structured-mis-skills
   version: 0.1.0
@@ -40,6 +40,7 @@ https://github.com/DayuanJiang/next-ai-draw-io
 2. 能创建一个最小测试图并导出可重新打开的 `.drawio`；
 3. 配置没有把模型 API key、Token、本机私人路径或其他秘密写入受版本控制文件；
 4. 使用的上游版本和 Node.js 要求已经记录。
+5. 已确认图表内容是否允许发送到外部渲染页面。Next AI Draw.io默认可能加载`https://embed.diagrams.net`；敏感图表必须按上游说明配置自托管`DRAWIO_BASE_URL`。
 
 任一项不满足时停止本 Skill，只返回官方项目链接和项目级配置引导。不得跳过依赖后把语义模型或XML草稿描述成完整的图表交付。
 

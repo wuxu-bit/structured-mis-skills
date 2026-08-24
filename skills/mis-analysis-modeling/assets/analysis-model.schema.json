@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.invalid/structured-mis-skills/analysis-model.schema.json",
+  "$id": "https://raw.githubusercontent.com/wuxu-bit/structured-mis-skills/main/skills/mis-analysis-modeling/assets/analysis-model.schema.json",
   "title": "Structured MIS analysis model",
   "type": "object",
   "additionalProperties": false,

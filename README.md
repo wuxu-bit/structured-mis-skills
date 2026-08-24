@@ -2,7 +2,13 @@
 
 > Turn information-system requirements into traceable TFD, DFD, data dictionaries, and database evidence instead of disconnected diagrams and schemas.
 
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-compatible-111827)](https://agentskills.io)
+[![skills.sh](https://skills.sh/b/wuxu-bit/structured-mis-skills)](https://skills.sh/wuxu-bit/structured-mis-skills)
+[![Validate](https://github.com/wuxu-bit/structured-mis-skills/actions/workflows/validate.yml/badge.svg)](https://github.com/wuxu-bit/structured-mis-skills/actions/workflows/validate.yml)
+
 Structured MIS Skills 是一套面向信息系统分析、课程设计和原型实施的 Agent Skills。它把需求、业务流程图（TFD）、数据流程图（DFD）、完整数据字典、Prisma Schema、数据库迁移和只读验证组织成一条可追踪的工作链。
+
+两个Skill遵循开放的[Agent Skills规范](https://agentskills.io/specification)，不绑定OpenCode。可以安装到OpenCode、Claude Code、Codex、Cursor、Gemini CLI、GitHub Copilot、Cline、OpenClaw及其他兼容Agent Skills的客户端。Skill可以跨平台安装；完整执行仍要求客户端支持并配置对应MCP依赖。
 
 本仓库不附带模型 API key、数据库凭据或第三方 MCP 服务。两个 Skill 依托下列上游项目运行，使用对应 Skill 前必须先按上游文档完成配置；本仓库只提供配置引导，不复制第三方代码或秘密。
 
@@ -35,9 +41,61 @@ Structured MIS Skills 是一套面向信息系统分析、课程设计和原型�
 
 ## 快速开始
 
-### 完整安装（含验证器）
+### 通用安装器（推荐）
 
-克隆完整仓库并安装锁定依赖：
+使用[Vercel Skills CLI](https://github.com/vercel-labs/skills)自动发现当前环境中的Agent并选择Skill：
+
+```bash
+npx skills add wuxu-bit/structured-mis-skills
+```
+
+列出本仓库的两个Skill：
+
+```bash
+npx skills add wuxu-bit/structured-mis-skills --list
+```
+
+安装指定Skill到一个或多个Agent：
+
+```bash
+npx skills add wuxu-bit/structured-mis-skills \
+  --skill mis-analysis-modeling \
+  --agent claude-code \
+  --agent opencode
+```
+
+安装两个Skill到安装器支持的所有Agent：
+
+```bash
+npx skills add wuxu-bit/structured-mis-skills --all
+```
+
+加`--global`可安装到用户级目录；默认安装到当前项目。安装器默认使用符号链接维护单一副本，不支持符号链接的平台可以选择`--copy`。
+
+无需安装即可生成Skill提示或启动受支持Agent：
+
+```bash
+npx skills use wuxu-bit/structured-mis-skills@mis-analysis-modeling
+```
+
+### 主流平台
+
+| 平台 | `--agent`名称 | 项目级路径 | 用户级路径 |
+|---|---|---|---|
+| OpenCode | `opencode` | `.agents/skills/` | `~/.config/opencode/skills/` |
+| Claude Code | `claude-code` | `.claude/skills/` | `~/.claude/skills/` |
+| Codex | `codex` | `.agents/skills/` | `~/.codex/skills/` |
+| Cursor | `cursor` | `.agents/skills/` | `~/.cursor/skills/` |
+| Gemini CLI | `gemini-cli` | `.agents/skills/` | `~/.gemini/skills/` |
+| GitHub Copilot | `github-copilot` | `.agents/skills/` | `~/.copilot/skills/` |
+| Cline | `cline` | `.agents/skills/` | `~/.agents/skills/` |
+| OpenClaw | `openclaw` | `skills/` | `~/.openclaw/skills/` |
+
+平台路径由Skills CLI维护，完整列表及变化以其[Supported Agents](https://github.com/vercel-labs/skills#supported-agents)为准。更多说明见[`docs/platform-installation.md`](docs/platform-installation.md)。
+
+### 完整仓库（含开发验证器）
+
+克隆完整仓库并使用Node.js 22.20或更高版本安装锁定依赖：
 
 ```bash
 git clone https://github.com/wuxu-bit/structured-mis-skills.git
@@ -46,18 +104,18 @@ npm ci
 npm test
 ```
 
-随后先按“前置依赖”完成对应上游项目配置，再在Agent runtime配置中把仓库的`skills/`加入项目级Skill搜索路径。完整安装才能使用根目录的验证脚本、Schema和合成fixtures。
+随后先按“前置依赖”完成对应上游项目配置。完整仓库用于运行根目录验证脚本、Skill内置Schema和合成fixtures；普通用户只安装Skill时不要求克隆开发工具。
 
-### 仅安装方法层
+### 手动安装
 
-如果只复制单个Skill目录，例如：
+无法使用`npx`时，把完整Skill目录复制到目标平台的Skill路径。必须保留`SKILL.md`、`references/`和`templates/`，不能只复制一个Markdown文件：
 
 ```text
-.opencode/skills/mis-analysis-modeling/SKILL.md
-.opencode/skills/mis-database-realization/SKILL.md
+<agent-skill-path>/mis-analysis-modeling/
+<agent-skill-path>/mis-database-realization/
 ```
 
-则可以使用`SKILL.md`、`references/`和`templates/`中的方法，但不能直接运行仓库根目录验证器。不同Agent runtime的配置格式可能变化，请以其当前官方文档为准。
+手动安装后重启或重新加载对应Agent。若平台不原生支持Agent Skills，可将`SKILL.md`作为项目指令加载，但这种回退方式不具备标准的自动发现和渐进加载能力。
 
 ### 直接触发
 
@@ -134,11 +192,13 @@ https://github.com/prisma/prisma
 npm test
 npm run audit:example
 npm run scan:portable
+npm run validate:discovery
 ```
 
 验证器当前检查：
 
 - Skill frontmatter 和仓库结构。
+- 通用Skills CLI能否发现两个Skill。
 - 未压缩draw.io XML在`academic` profile下的ID、引用、绑定边、锚点、TFD/DFD标签及基本连接规则。
 - `analysis-model.json` 中需求、TFD、DFD、数据字典和逻辑存储映射的闭包。
 - DFD父子图边界端点、方向和数据流细化关系。

@@ -1,5 +1,5 @@
 {
-  "$schema": "../../../schemas/analysis-model.schema.json",
+  "$schema": "../assets/analysis-model.schema.json",
   "system": {
     "id": "example-system",
     "name": "Example Information System",

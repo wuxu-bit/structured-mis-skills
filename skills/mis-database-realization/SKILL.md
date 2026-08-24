@@ -2,7 +2,7 @@
 name: mis-database-realization
 description: Use when an information-system analysis model must be traced from DFD logical stores and complete data dictionaries into PostgreSQL/Prisma, migration evidence, read-only DBHub validation, or implementation-drift records. Trigger on 逻辑存储到Prisma映射, 数据字典与数据库一致性, DBHub只读验证, and 分析设计实现追踪; do not trigger for generic PostgreSQL, migration, seed, or Prisma coding tasks.
 license: Apache-2.0
-compatibility: Requires PostgreSQL, Prisma, and a configured DBHub MCP with database-enforced read-only access.
+compatibility: Cross-platform Agent Skills format. Requires an MCP-capable client, PostgreSQL, Prisma, and DBHub configured with database-enforced read-only access.
 metadata:
   author: structured-mis-skills
   version: 0.1.0

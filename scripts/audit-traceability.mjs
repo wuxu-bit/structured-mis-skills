@@ -28,7 +28,7 @@ try {
 }
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
-const schema = JSON.parse(fs.readFileSync(path.join(scriptDirectory, "../schemas/analysis-model.schema.json"), "utf8"));
+const schema = JSON.parse(fs.readFileSync(path.join(scriptDirectory, "../skills/mis-analysis-modeling/assets/analysis-model.schema.json"), "utf8"));
 const validate = new Ajv2020({ allErrors: true, strict: false }).compile(schema);
 if (!validate(model)) {
   for (const issue of validate.errors || []) errors.push(`Schema ${issue.instancePath || "/"}: ${issue.message}`);
