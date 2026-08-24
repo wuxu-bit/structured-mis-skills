@@ -1,0 +1,306 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/structured-mis-skills/analysis-model.schema.json",
+  "title": "Structured MIS analysis model",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "system", "requirements", "actors", "businessFlows", "processes", "diagrams",
+    "dataFlows", "dataStores", "dataStructures", "dataItems", "states", "mappings",
+    "openQuestions", "implementationDifferences"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "system": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["id", "name", "goal", "boundary"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/nonEmpty" },
+        "goal": { "$ref": "#/$defs/nonEmpty" },
+        "boundary": { "$ref": "#/$defs/nonEmpty" },
+        "exclusions": { "type": "array", "items": { "type": "string" } },
+        "notationProfile": { "type": "object" }
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "statement", "priority", "status"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "statement": { "$ref": "#/$defs/nonEmpty" },
+          "priority": { "enum": ["must", "should", "could"] },
+          "status": { "enum": ["proposed", "accepted", "excluded"] }
+        }
+      }
+    },
+    "actors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["cardId", "id", "name", "type", "boundaryDescription", "incomingFlowIds", "outgoingFlowIds"],
+        "properties": {
+          "cardId": { "$ref": "#/$defs/id" },
+          "id": { "$ref": "#/$defs/id" },
+          "name": { "$ref": "#/$defs/nonEmpty" },
+          "type": { "$ref": "#/$defs/nonEmpty" },
+          "boundaryDescription": { "$ref": "#/$defs/nonEmpty" },
+          "incomingFlowIds": { "$ref": "#/$defs/stringArray" },
+          "outgoingFlowIds": { "$ref": "#/$defs/stringArray" }
+        }
+      }
+    },
+    "businessFlows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "trigger", "outcome", "requirementIds"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "name": { "$ref": "#/$defs/nonEmpty" },
+          "trigger": { "$ref": "#/$defs/nonEmpty" },
+          "outcome": { "$ref": "#/$defs/nonEmpty" },
+          "requirementIds": { "$ref": "#/$defs/stringArray" }
+        }
+      }
+    },
+    "processes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "cardId", "id", "name", "level", "inputFlowIds", "outputFlowIds", "readStoreIds",
+          "writeStoreIds", "trigger", "logic", "exceptions", "frequency"
+        ],
+        "properties": {
+          "cardId": { "$ref": "#/$defs/id" },
+          "id": { "$ref": "#/$defs/id" },
+          "name": { "$ref": "#/$defs/nonEmpty" },
+          "level": { "type": "integer", "minimum": 0 },
+          "inputFlowIds": { "$ref": "#/$defs/stringArray" },
+          "outputFlowIds": { "$ref": "#/$defs/stringArray" },
+          "readStoreIds": { "$ref": "#/$defs/stringArray" },
+          "writeStoreIds": { "$ref": "#/$defs/stringArray" },
+          "trigger": { "$ref": "#/$defs/nonEmpty" },
+          "logic": { "$ref": "#/$defs/nonEmpty" },
+          "exceptions": { "type": "array", "items": { "type": "string" } },
+          "frequency": { "$ref": "#/$defs/nonEmpty" }
+        }
+      }
+    },
+    "diagrams": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "level", "processIds", "storeIds", "boundaryFlows", "processBoundaries"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "type": { "enum": ["tfd", "dfd"] },
+          "level": { "type": "integer", "minimum": 0 },
+          "parentDiagramId": { "type": "string" },
+          "parentProcessId": { "type": "string" },
+          "businessFlowId": { "type": "string" },
+          "processIds": { "type": "array", "items": { "type": "string" } },
+          "storeIds": { "type": "array", "items": { "type": "string" } },
+          "boundaryFlows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["flowId", "endpointId", "direction"],
+              "properties": {
+                "flowId": { "type": "string" },
+                "endpointId": { "type": "string" },
+                "direction": { "enum": ["input", "output"] },
+                "processId": { "type": "string" }
+              }
+            }
+          },
+          "processBoundaries": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["processId", "boundaryFlows"],
+              "properties": {
+                "processId": { "type": "string" },
+                "boundaryFlows": {
+                  "type": "array",
+                  "items": { "$ref": "#/$defs/boundaryFlow" }
+                }
+              }
+            }
+          }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "type": { "const": "dfd" }, "level": { "minimum": 1 } }, "required": ["type", "level"] },
+            "then": { "required": ["parentDiagramId", "parentProcessId"] }
+          }
+        ]
+      }
+    },
+    "dataFlows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["cardId", "id", "name", "description", "source", "target", "structureIds", "frequency"],
+        "properties": {
+          "cardId": { "$ref": "#/$defs/id" },
+          "id": { "$ref": "#/$defs/id" },
+          "name": { "$ref": "#/$defs/nonEmpty" },
+          "description": { "$ref": "#/$defs/nonEmpty" },
+          "source": { "type": "string" },
+          "target": { "type": "string" },
+          "structureIds": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "frequency": { "$ref": "#/$defs/nonEmpty" }
+        }
+      }
+    },
+    "dataStores": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "cardId", "id", "name", "description", "structureIds", "keyItemIds", "readProcessIds",
+          "writeProcessIds", "retention"
+        ],
+        "properties": {
+          "cardId": { "$ref": "#/$defs/id" },
+          "id": { "$ref": "#/$defs/id" },
+          "name": { "$ref": "#/$defs/nonEmpty" },
+          "description": { "$ref": "#/$defs/nonEmpty" },
+          "structureIds": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "keyItemIds": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "readProcessIds": { "$ref": "#/$defs/stringArray" },
+          "writeProcessIds": { "$ref": "#/$defs/stringArray" },
+          "retention": { "$ref": "#/$defs/nonEmpty" }
+        }
+      }
+    },
+    "dataStructures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["cardId", "id", "name", "description"],
+        "properties": {
+          "cardId": { "$ref": "#/$defs/id" },
+          "id": { "$ref": "#/$defs/id" },
+          "name": { "$ref": "#/$defs/nonEmpty" },
+          "description": { "$ref": "#/$defs/nonEmpty" },
+          "itemIds": { "type": "array", "items": { "type": "string" } },
+          "structureIds": { "type": "array", "items": { "type": "string" } }
+        },
+        "anyOf": [
+          { "required": ["itemIds"] },
+          { "required": ["structureIds"] }
+        ]
+      }
+    },
+    "dataItems": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "cardId", "id", "name", "aliases", "description", "logicalType", "representation",
+          "valueDomain", "required", "sensitive", "constraints"
+        ],
+        "properties": {
+          "cardId": { "$ref": "#/$defs/id" },
+          "id": { "$ref": "#/$defs/id" },
+          "name": { "$ref": "#/$defs/nonEmpty" },
+          "aliases": { "type": "array", "items": { "type": "string" } },
+          "description": { "$ref": "#/$defs/nonEmpty" },
+          "logicalType": { "$ref": "#/$defs/nonEmpty" },
+          "representation": { "$ref": "#/$defs/nonEmpty" },
+          "valueDomain": { "$ref": "#/$defs/nonEmpty" },
+          "stateId": { "type": "string" },
+          "required": { "type": "boolean" },
+          "sensitive": { "type": "boolean" },
+          "constraints": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "length": { "type": "integer", "minimum": 1 },
+          "precision": { "$ref": "#/$defs/nonEmpty" }
+        }
+      }
+    },
+    "states": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "values", "transitions"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "name": { "$ref": "#/$defs/nonEmpty" },
+          "values": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["code", "meaning"],
+              "properties": {
+                "code": { "type": ["integer", "string"] },
+                "meaning": { "$ref": "#/$defs/nonEmpty" }
+              }
+            }
+          },
+          "transitions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["from", "to", "trigger"],
+              "properties": {
+                "from": { "type": ["integer", "string"] },
+                "to": { "type": ["integer", "string"] },
+                "trigger": { "$ref": "#/$defs/nonEmpty" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "mappings": {
+      "type": "object",
+      "required": [
+        "requirementToBusinessFlow", "businessFlowToProcess", "dataFlowRefinements",
+        "storeToTable", "itemToColumn", "stateToPhysical"
+      ],
+      "properties": {
+        "requirementToBusinessFlow": { "type": "array", "items": { "type": "object", "required": ["requirementId", "businessFlowId"] } },
+        "businessFlowToProcess": { "type": "array", "items": { "type": "object", "required": ["businessFlowId", "processIds"] } },
+        "dataFlowRefinements": { "type": "array", "items": { "type": "object", "required": ["parentFlowId", "childFlowIds"] } },
+        "storeToTable": { "type": "array", "items": { "type": "object", "required": ["storeId", "tableNames"] } },
+        "itemToColumn": { "type": "array", "items": { "type": "object", "required": ["itemId", "storeId", "tableName", "columnName"] } },
+        "stateToPhysical": { "type": "array", "items": { "type": "object", "required": ["stateId", "itemId", "tableName", "columnName"] } }
+      }
+    },
+    "openQuestions": { "type": "array", "items": { "type": "object" } },
+    "implementationDifferences": { "type": "array", "items": { "type": "object" } }
+  },
+  "$defs": {
+    "id": { "type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$" },
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "stringArray": { "type": "array", "items": { "type": "string" } },
+    "boundaryFlow": {
+      "type": "object",
+      "required": ["flowId", "endpointId", "direction"],
+      "properties": {
+        "flowId": { "type": "string" },
+        "endpointId": { "type": "string" },
+        "direction": { "enum": ["input", "output"] },
+        "processId": { "type": "string" }
+      }
+    },
+    "namedArray": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "name": { "$ref": "#/$defs/nonEmpty" }
+        }
+      }
+    }
+  }
+}

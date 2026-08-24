@@ -1,0 +1,21 @@
+{
+  "name": "structured-mis-skills",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Agent Skills for traceable TFD, DFD, data dictionaries, and database realization.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "audit:example": "node scripts/audit-traceability.mjs --stage realization examples/library-lending/analysis-model.json && node scripts/audit-balance.mjs examples/library-lending/analysis-model.json && node scripts/audit-drawio.mjs --type tfd --profile academic examples/library-lending/tfd-borrow.drawio && node scripts/audit-drawio.mjs --type dfd --profile academic examples/library-lending/dfd-context.drawio",
+    "scan:portable": "node scripts/scan-portability.mjs .",
+    "validate:skills": "node scripts/validate-skills.mjs ."
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@xmldom/xmldom": "0.9.12",
+    "ajv": "8.20.0"
+  }
+}

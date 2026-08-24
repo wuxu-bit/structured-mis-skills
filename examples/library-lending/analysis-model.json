@@ -1,0 +1,233 @@
+{
+  "$schema": "../../schemas/analysis-model.schema.json",
+  "system": {
+    "id": "library-lending",
+    "name": "Library Lending Information System",
+    "goal": "Record and control book borrowing with a traceable approval result.",
+    "boundary": "The system validates readers and books, creates loans, and returns results. Readers remain outside the system.",
+    "exclusions": ["Online payment", "Inter-library loan"],
+    "notationProfile": {
+      "tfdEdgeLabels": "forbidden",
+      "externalEntityShape": "circle"
+    }
+  },
+  "requirements": [
+    { "id": "R-001", "statement": "An eligible reader can submit a borrowing request.", "priority": "must", "status": "accepted" },
+    { "id": "R-002", "statement": "The system records an approved loan and returns a result.", "priority": "must", "status": "accepted" }
+  ],
+  "actors": [
+    {
+      "id": "S1",
+      "cardId": "E-01",
+      "name": "Reader",
+      "type": "person",
+      "boundaryDescription": "A library user who submits borrowing requests and receives results.",
+      "incomingFlowIds": ["D-005"],
+      "outgoingFlowIds": ["D-001"]
+    }
+  ],
+  "businessFlows": [
+    {
+      "id": "B-001",
+      "name": "Borrow a book",
+      "trigger": "An eligible reader submits a borrowing request.",
+      "outcome": "The system records an approved loan or returns a rejection result.",
+      "requirementIds": ["R-001", "R-002"]
+    }
+  ],
+  "processes": [
+    {
+      "id": "P0",
+      "cardId": "P-00",
+      "name": "Library Lending Information System",
+      "level": 0,
+      "inputFlowIds": ["D-001"],
+      "outputFlowIds": ["D-005"],
+      "readStoreIds": [],
+      "writeStoreIds": [],
+      "trigger": "A reader submits a borrowing request.",
+      "logic": "Coordinate request validation and loan registration.",
+      "exceptions": ["Invalid request"],
+      "frequency": "On demand"
+    },
+    {
+      "id": "P1",
+      "cardId": "P-01",
+      "name": "Validate borrowing request",
+      "level": 1,
+      "inputFlowIds": ["D-001"],
+      "outputFlowIds": ["D-002"],
+      "readStoreIds": [],
+      "writeStoreIds": [],
+      "trigger": "A borrowing request is received.",
+      "logic": "Validate reader and book identifiers and decide whether the request can proceed.",
+      "exceptions": ["Reader is ineligible", "Book is unavailable"],
+      "frequency": "Once per request"
+    },
+    {
+      "id": "P2",
+      "cardId": "P-02",
+      "name": "Create loan record",
+      "level": 1,
+      "inputFlowIds": ["D-002", "D-004"],
+      "outputFlowIds": ["D-003", "D-005"],
+      "readStoreIds": ["F1"],
+      "writeStoreIds": ["F1"],
+      "trigger": "A borrowing request is approved.",
+      "logic": "Check loan history, create a loan record, and return the result.",
+      "exceptions": ["A conflicting loan already exists"],
+      "frequency": "Once per approved request"
+    }
+  ],
+  "diagrams": [
+    {
+      "id": "TFD-B001",
+      "type": "tfd",
+      "level": 0,
+      "businessFlowId": "B-001",
+      "processIds": ["P1", "P2"],
+      "storeIds": ["F1"],
+      "boundaryFlows": [
+        { "flowId": "D-001", "endpointId": "S1", "direction": "input", "processId": "P1" },
+        { "flowId": "D-005", "endpointId": "S1", "direction": "output", "processId": "P2" }
+      ],
+      "processBoundaries": [
+        {
+          "processId": "P1",
+          "boundaryFlows": [
+            { "flowId": "D-001", "endpointId": "S1", "direction": "input" },
+            { "flowId": "D-002", "endpointId": "P2", "direction": "output" }
+          ]
+        },
+        {
+          "processId": "P2",
+          "boundaryFlows": [
+            { "flowId": "D-002", "endpointId": "P1", "direction": "input" },
+            { "flowId": "D-003", "endpointId": "F1", "direction": "output" },
+            { "flowId": "D-004", "endpointId": "F1", "direction": "input" },
+            { "flowId": "D-005", "endpointId": "S1", "direction": "output" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DFD-0",
+      "type": "dfd",
+      "level": 0,
+      "processIds": ["P0"],
+      "storeIds": [],
+      "boundaryFlows": [
+        { "flowId": "D-001", "endpointId": "S1", "direction": "input", "processId": "P0" },
+        { "flowId": "D-005", "endpointId": "S1", "direction": "output", "processId": "P0" }
+      ],
+      "processBoundaries": [
+        {
+          "processId": "P0",
+          "boundaryFlows": [
+            { "flowId": "D-001", "endpointId": "S1", "direction": "input" },
+            { "flowId": "D-005", "endpointId": "S1", "direction": "output" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DFD-1",
+      "type": "dfd",
+      "level": 1,
+      "parentDiagramId": "DFD-0",
+      "parentProcessId": "P0",
+      "processIds": ["P1", "P2"],
+      "storeIds": ["F1"],
+      "boundaryFlows": [
+        { "flowId": "D-001", "endpointId": "S1", "direction": "input", "processId": "P1" },
+        { "flowId": "D-005", "endpointId": "S1", "direction": "output", "processId": "P2" }
+      ],
+      "processBoundaries": [
+        {
+          "processId": "P1",
+          "boundaryFlows": [
+            { "flowId": "D-001", "endpointId": "S1", "direction": "input" },
+            { "flowId": "D-002", "endpointId": "P2", "direction": "output" }
+          ]
+        },
+        {
+          "processId": "P2",
+          "boundaryFlows": [
+            { "flowId": "D-002", "endpointId": "P1", "direction": "input" },
+            { "flowId": "D-003", "endpointId": "F1", "direction": "output" },
+            { "flowId": "D-004", "endpointId": "F1", "direction": "input" },
+            { "flowId": "D-005", "endpointId": "S1", "direction": "output" }
+          ]
+        }
+      ]
+    }
+  ],
+  "dataFlows": [
+    { "cardId": "DF-01", "id": "D-001", "name": "Borrowing request", "description": "Reader and book identifiers submitted for borrowing.", "source": "S1", "target": "P1", "structureIds": ["DS-001"], "frequency": "On demand" },
+    { "cardId": "DF-02", "id": "D-002", "name": "Approved request", "description": "A validated request passed to loan registration.", "source": "P1", "target": "P2", "structureIds": ["DS-001"], "frequency": "Per approved request" },
+    { "cardId": "DF-03", "id": "D-003", "name": "Loan record", "description": "A new persistent loan record.", "source": "P2", "target": "F1", "structureIds": ["DS-002"], "frequency": "Per approved request" },
+    { "cardId": "DF-04", "id": "D-004", "name": "Loan history", "description": "Existing loan records used for conflict checks.", "source": "F1", "target": "P2", "structureIds": ["DS-002"], "frequency": "Per approved request" },
+    { "cardId": "DF-05", "id": "D-005", "name": "Borrowing result", "description": "Approval or rejection result returned to the reader.", "source": "P2", "target": "S1", "structureIds": ["DS-003"], "frequency": "Per request" }
+  ],
+  "dataStores": [
+    {
+      "id": "F1",
+      "cardId": "ST-01",
+      "name": "Loan records",
+      "description": "Persistent records of approved borrowing transactions and their result state.",
+      "structureIds": ["DS-002"],
+      "keyItemIds": ["I-003"],
+      "readProcessIds": ["P2"],
+      "writeProcessIds": ["P2"],
+      "retention": "Retained for the configured audit period"
+    }
+  ],
+  "dataStructures": [
+    { "cardId": "STR-01", "id": "DS-001", "name": "Borrowing request", "description": "Identifiers needed to request a loan.", "itemIds": ["I-001", "I-002"] },
+    { "cardId": "STR-02", "id": "DS-002", "name": "Loan record", "description": "Persistent loan identity, participants, and result state.", "itemIds": ["I-001", "I-002", "I-003", "I-004"] },
+    { "cardId": "STR-03", "id": "DS-003", "name": "Borrowing result", "description": "Result returned after processing.", "itemIds": ["I-003", "I-004"] }
+  ],
+  "dataItems": [
+    { "cardId": "DI-01", "id": "I-001", "name": "Reader identifier", "aliases": ["Reader ID"], "description": "Stable identifier of the borrowing reader.", "logicalType": "identifier", "representation": "Opaque identifier; physical type is selected during realization.", "valueDomain": "Identifiers of known readers", "required": true, "sensitive": false, "constraints": ["Must reference a known reader"] },
+    { "cardId": "DI-02", "id": "I-002", "name": "Book identifier", "aliases": ["Book ID"], "description": "Stable identifier of the requested book.", "logicalType": "identifier", "representation": "Opaque identifier; physical type is selected during realization.", "valueDomain": "Identifiers of known books", "required": true, "sensitive": false, "constraints": ["Must reference a known book"] },
+    { "cardId": "DI-03", "id": "I-003", "name": "Loan identifier", "aliases": ["Loan ID"], "description": "Unique identifier of the loan record.", "logicalType": "identifier", "representation": "Opaque identifier; physical type is selected during realization.", "valueDomain": "Unique loan identifiers", "required": true, "sensitive": false, "constraints": ["Unique"] },
+    { "cardId": "DI-04", "id": "I-004", "name": "Result code", "aliases": ["Loan result"], "description": "Persisted result of the borrowing request.", "logicalType": "code", "representation": "Integer code defined by STATE-LOAN.", "valueDomain": "0 = Rejected; 1 = Approved", "stateId": "STATE-LOAN", "required": true, "sensitive": false, "constraints": ["Must use STATE-LOAN"] }
+  ],
+  "states": [
+    {
+      "id": "STATE-LOAN",
+      "name": "Loan result",
+      "values": [
+        { "code": 0, "meaning": "Rejected" },
+        { "code": 1, "meaning": "Approved" }
+      ],
+      "transitions": [
+        { "from": 0, "to": 1, "trigger": "Request is approved before persistence" }
+      ]
+    }
+  ],
+  "mappings": {
+    "requirementToBusinessFlow": [
+      { "requirementId": "R-001", "businessFlowId": "B-001" },
+      { "requirementId": "R-002", "businessFlowId": "B-001" }
+    ],
+    "businessFlowToProcess": [
+      { "businessFlowId": "B-001", "processIds": ["P1", "P2"] }
+    ],
+    "dataFlowRefinements": [],
+    "storeToTable": [
+      { "storeId": "F1", "tableNames": ["loan"] }
+    ],
+    "itemToColumn": [
+      { "itemId": "I-001", "storeId": "F1", "tableName": "loan", "columnName": "reader_id" },
+      { "itemId": "I-002", "storeId": "F1", "tableName": "loan", "columnName": "book_id" },
+      { "itemId": "I-003", "storeId": "F1", "tableName": "loan", "columnName": "loan_id" },
+      { "itemId": "I-004", "storeId": "F1", "tableName": "loan", "columnName": "result_code" }
+    ],
+    "stateToPhysical": [
+      { "stateId": "STATE-LOAN", "itemId": "I-004", "tableName": "loan", "columnName": "result_code" }
+    ]
+  },
+  "openQuestions": [],
+  "implementationDifferences": []
+}

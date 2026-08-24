@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../schemas/analysis-model.schema.json",
+  "system": {
+    "id": "example-system",
+    "name": "Example Information System",
+    "goal": "",
+    "boundary": "",
+    "exclusions": [],
+    "notationProfile": {
+      "tfdEdgeLabels": "forbidden",
+      "externalEntityShape": "circle",
+      "processShape": "divided-rectangle",
+      "dataStoreShape": "open-right-rectangle"
+    }
+  },
+  "requirements": [],
+  "actors": [],
+  "businessFlows": [],
+  "processes": [],
+  "diagrams": [],
+  "dataFlows": [],
+  "dataStores": [],
+  "dataStructures": [],
+  "dataItems": [],
+  "states": [],
+  "mappings": {
+    "requirementToBusinessFlow": [],
+    "businessFlowToProcess": [],
+    "dataFlowRefinements": [],
+    "storeToTable": [],
+    "itemToColumn": [],
+    "stateToPhysical": []
+  },
+  "openQuestions": [],
+  "implementationDifferences": []
+}

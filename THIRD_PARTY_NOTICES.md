@@ -1,0 +1,47 @@
+# Third-Party Notices
+
+Structured MIS Skills contains original workflow instructions, templates, examples, and validation scripts. The following projects are referenced as optional external integrations. Their code is not vendored in this repository.
+
+## Next AI Draw.io
+
+- Project: Next AI Draw.io
+- Author: DayuanJiang and contributors
+- Repository: https://github.com/DayuanJiang/next-ai-draw-io
+- License: Apache License 2.0
+- Use here: optional MCP integration for creating, previewing, editing, and exporting draw.io diagrams
+
+The information-system modeling rules in this repository are maintained independently. This repository does not claim that the upstream project provides these domain rules.
+
+## DBHub
+
+- Project: DBHub
+- Author: Bytebase and contributors
+- Repository: https://github.com/bytebase/dbhub
+- License: MIT License
+- Use here: optional MCP integration for controlled database exploration and read-only verification
+
+## Prisma
+
+- Project: Prisma
+- Author: Prisma Data, Inc. and contributors
+- Repository: https://github.com/prisma/prisma
+- License: Apache License 2.0
+- Use here: external schema, migration, seed, and database-client tooling
+
+## xmldom
+
+- Package: `@xmldom/xmldom`
+- Repository: https://github.com/xmldom/xmldom
+- License: MIT License
+- Use here: pinned runtime dependency for parsing uncompressed draw.io XML
+
+## Ajv
+
+- Package: `ajv`
+- Repository: https://github.com/ajv-validator/ajv
+- License: MIT License
+- Use here: pinned runtime dependency for validating the analysis-model JSON Schema
+
+## Independence
+
+Structured MIS Skills is not affiliated with, endorsed by, or maintained by the projects listed above. Users must review the current upstream documentation, release notes, security guidance, runtime requirements, and licenses before installation.
