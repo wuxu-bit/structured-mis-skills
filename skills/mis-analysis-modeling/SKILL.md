@@ -2,7 +2,7 @@
 name: mis-analysis-modeling
 description: Use when an information-system analysis task combines business flow diagrams (TFD), layered data flow diagrams (DFD), complete data dictionaries, parent-child balance, or cross-artifact traceability. Trigger on 信息系统业务流程图, 数据流程图与数据字典一致性, TFD/DFD, 父子图平衡, and 结构化系统分析建模; do not trigger for generic draw.io, UML, architecture, or ordinary flowcharts.
 license: Apache-2.0
-compatibility: Agent runtime with file access; optional draw.io MCP for editable diagram generation; Node.js 20+ for bundled validators.
+compatibility: Requires a configured Next AI Draw.io MCP from DayuanJiang/next-ai-draw-io; Agent runtime with file access; Node.js 20+ for bundled validators.
 metadata:
   author: structured-mis-skills
   version: 0.1.0
@@ -27,6 +27,21 @@ metadata:
 - 普通软件流程图、部署架构图、UML类图或统计图。
 - 只要求美化一张图而不允许检查其业务语义。
 - 把界面、按钮、Controller、SQL或物理设备混入系统分析模型。
+
+## Gate -1：前置依赖
+
+使用本 Skill 前必须配置并验证 Next AI Draw.io MCP：
+
+https://github.com/DayuanJiang/next-ai-draw-io
+
+前置检查必须确认：
+
+1. 当前 Agent runtime 能发现并调用该项目提供的 MCP 工具；
+2. 能创建一个最小测试图并导出可重新打开的 `.drawio`；
+3. 配置没有把模型 API key、Token、本机私人路径或其他秘密写入受版本控制文件；
+4. 使用的上游版本和 Node.js 要求已经记录。
+
+任一项不满足时停止本 Skill，只返回官方项目链接和项目级配置引导。不得跳过依赖后把语义模型或XML草稿描述成完整的图表交付。
 
 ## 权威顺序
 
@@ -163,20 +178,21 @@ node scripts/audit-drawio.mjs --type dfd --profile academic <diagram.drawio>
 
 只有用户明确要求时才额外导出 SVG 或 PNG。报告节选单独生成，不覆盖完整字典。
 
-## draw.io 工具策略
+## draw.io 依赖策略
 
-若运行环境已经提供兼容 draw.io MCP，使用它创建、预览、编辑和导出。若没有：
+本 Skill 依托 Next AI Draw.io MCP 创建、预览、编辑和导出图表。该依赖不是可选项，也不随本仓库分发。
 
-1. 仍完成语义模型、字典和追踪矩阵；
+依赖未配置时：
+
+1. 立即停止执行绘图工作流；
 2. 给出官方上游链接和项目级配置请求；
-3. 不安装未知工具，不请求模型 API key，不编造已生成图表；
-4. 不把本机绝对路径或用户凭据写入配置。
-
-可选上游：
+3. 不安装来源不明的替代工具，不请求或记录模型 API key；
+4. 不把本机绝对路径或用户凭据写入配置；
+5. 配置和最小导出测试通过后，才从 Gate 0 重新开始。
 
 https://github.com/DayuanJiang/next-ai-draw-io
 
-该项目是外部工具，不是本仓库的一部分。信息系统建模规则由本 Skill 提供。
+该项目是本 Skill 的必需外部依赖，但不是本仓库的一部分。MCP负责图表创建、预览和导出；本 Skill 负责信息系统建模、一致性规则和验证流程。
 
 ## 停止条件
 

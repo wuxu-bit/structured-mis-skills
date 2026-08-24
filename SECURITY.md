@@ -18,7 +18,7 @@ Use environment-variable names and invalid placeholders in documentation. Do not
 
 ## Diagram Tools
 
-This repository does not require or distribute a model API key. Optional draw.io MCP tooling receives diagram XML from the Agent runtime. Review the selected upstream tool before use, especially if diagrams contain confidential information or use a hosted diagrams.net renderer.
+This repository does not require or distribute a model API key. The required Next AI Draw.io MCP dependency receives diagram XML from the Agent runtime. Configure it from its official repository before using `mis-analysis-modeling`, and review its security boundary especially if diagrams contain confidential information or use a hosted diagrams.net renderer.
 
 ## Database Tools
 

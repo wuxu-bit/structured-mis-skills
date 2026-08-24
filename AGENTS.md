@@ -40,10 +40,12 @@ Do not turn a derived claim into a fact when the underlying artifact contradicts
 7. Record every logical-to-physical split and every implementation deviation.
 8. Run `npm test`, `npm run audit:example`, and `npm run scan:portable` before release.
 
-## Third-Party Tools
+## Required Upstream Dependencies
 
-External tools are optional integrations. Link to their official repositories and licenses; do not vendor them without an explicit licensing review.
+The Skills depend on the following upstream projects. Verify the required dependency before starting the corresponding workflow. Link to official repositories and licenses; do not vendor them without an explicit licensing review.
 
-- Next AI Draw.io: https://github.com/DayuanJiang/next-ai-draw-io
-- DBHub: https://github.com/bytebase/dbhub
-- Prisma: https://github.com/prisma/prisma
+- `mis-analysis-modeling` requires Next AI Draw.io: https://github.com/DayuanJiang/next-ai-draw-io
+- `mis-database-realization` requires DBHub: https://github.com/bytebase/dbhub
+- `mis-database-realization` requires Prisma: https://github.com/prisma/prisma
+
+If a required dependency is unavailable or its minimum smoke test fails, stop at the prerequisite gate. Do not silently downgrade the workflow or claim the final artifact was produced.

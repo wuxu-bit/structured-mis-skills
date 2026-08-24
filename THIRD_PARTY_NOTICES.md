@@ -1,6 +1,6 @@
 # Third-Party Notices
 
-Structured MIS Skills contains original workflow instructions, templates, examples, and validation scripts. The following projects are referenced as optional external integrations. Their code is not vendored in this repository.
+Structured MIS Skills contains original workflow instructions, templates, examples, and validation scripts. The Skills rely on the upstream projects identified below. Their code is not vendored in this repository and must be configured separately before the corresponding Skill is used.
 
 ## Next AI Draw.io
 
@@ -8,7 +8,7 @@ Structured MIS Skills contains original workflow instructions, templates, exampl
 - Author: DayuanJiang and contributors
 - Repository: https://github.com/DayuanJiang/next-ai-draw-io
 - License: Apache License 2.0
-- Use here: optional MCP integration for creating, previewing, editing, and exporting draw.io diagrams
+- Use here: required MCP dependency of `mis-analysis-modeling` for creating, previewing, editing, and exporting draw.io diagrams
 
 The information-system modeling rules in this repository are maintained independently. This repository does not claim that the upstream project provides these domain rules.
 
@@ -18,7 +18,7 @@ The information-system modeling rules in this repository are maintained independ
 - Author: Bytebase and contributors
 - Repository: https://github.com/bytebase/dbhub
 - License: MIT License
-- Use here: optional MCP integration for controlled database exploration and read-only verification
+- Use here: required MCP dependency of `mis-database-realization` for controlled database exploration and read-only verification
 
 ## Prisma
 
@@ -26,7 +26,7 @@ The information-system modeling rules in this repository are maintained independ
 - Author: Prisma Data, Inc. and contributors
 - Repository: https://github.com/prisma/prisma
 - License: Apache License 2.0
-- Use here: external schema, migration, seed, and database-client tooling
+- Use here: required schema, migration, seed, and database-client tooling of `mis-database-realization`
 
 ## xmldom
 

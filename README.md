@@ -4,7 +4,7 @@
 
 Structured MIS Skills 是一套面向信息系统分析、课程设计和原型实施的 Agent Skills。它把需求、业务流程图（TFD）、数据流程图（DFD）、完整数据字典、Prisma Schema、数据库迁移和只读验证组织成一条可追踪的工作链。
 
-本仓库不附带模型 API key、数据库凭据或第三方 MCP 服务。图表和数据库工具均为可选外部依赖，由使用者按上游文档配置。
+本仓库不附带模型 API key、数据库凭据或第三方 MCP 服务。两个 Skill 依托下列上游项目运行，使用对应 Skill 前必须先按上游文档完成配置；本仓库只提供配置引导，不复制第三方代码或秘密。
 
 ## Skills
 
@@ -24,6 +24,15 @@ Structured MIS Skills 是一套面向信息系统分析、课程设计和原型�
 - Prisma 负责定义和迁移数据库；DBHub 只用于受控、只读的结构与数据验证。
 - 任何设计与实现偏差都进入差异记录，不静默修改事实。
 
+## 前置依赖
+
+| Skill | 使用前必须配置 | 用途 |
+|---|---|---|
+| `mis-analysis-modeling` | [DayuanJiang/next-ai-draw-io](https://github.com/DayuanJiang/next-ai-draw-io) | 通过 MCP 创建、预览、编辑和导出可编辑 draw.io 图 |
+| `mis-database-realization` | [prisma/prisma](https://github.com/prisma/prisma)、PostgreSQL、[bytebase/dbhub](https://github.com/bytebase/dbhub) | 定义和迁移数据库，并通过只读 MCP 核对实际结构与数据 |
+
+依赖未配置，或最小连通性测试未通过时，Skill 必须停止在前置检查阶段。不得把只完成的文字规划描述成已经生成图表或已经验证数据库。
+
 ## 快速开始
 
 ### 完整安装（含验证器）
@@ -37,7 +46,7 @@ npm ci
 npm test
 ```
 
-随后在Agent runtime配置中把仓库的`skills/`加入项目级Skill搜索路径。完整安装才能使用根目录的验证脚本、Schema和合成fixtures。
+随后先按“前置依赖”完成对应上游项目配置，再在Agent runtime配置中把仓库的`skills/`加入项目级Skill搜索路径。完整安装才能使用根目录的验证脚本、Schema和合成fixtures。
 
 ### 仅安装方法层
 
@@ -60,17 +69,17 @@ npm test
 根据 analysis-model.json 和数据字典，把逻辑数据存储映射为 PostgreSQL + Prisma Schema，审查迁移，并用只读方式验证数据库结构。
 ```
 
-## 可选工具
+## 依托的上游项目
 
 | 上游项目 | 用途 | 许可证 | 本仓库的关系 |
 |---|---|---|---|
-| [DayuanJiang/next-ai-draw-io](https://github.com/DayuanJiang/next-ai-draw-io) | 创建、预览和导出可编辑 draw.io 图 | Apache-2.0 | 可选 MCP 依赖，不随本仓库分发 |
-| [bytebase/dbhub](https://github.com/bytebase/dbhub) | 通过 MCP 探索和验证数据库 | MIT | 可选只读验证依赖，不随本仓库分发 |
-| [prisma/prisma](https://github.com/prisma/prisma) | Schema、迁移和类型安全数据库访问 | Apache-2.0 | 数据库实施工作流的外部工具 |
+| [DayuanJiang/next-ai-draw-io](https://github.com/DayuanJiang/next-ai-draw-io) | 创建、预览和导出可编辑 draw.io 图 | Apache-2.0 | `mis-analysis-modeling` 的必需 MCP 依赖，不随本仓库分发 |
+| [bytebase/dbhub](https://github.com/bytebase/dbhub) | 通过 MCP 探索和验证数据库 | MIT | `mis-database-realization` 的必需只读验证依赖，不随本仓库分发 |
+| [prisma/prisma](https://github.com/prisma/prisma) | Schema、迁移和类型安全数据库访问 | Apache-2.0 | `mis-database-realization` 的必需数据库工具，不随本仓库分发 |
 
 详细归属见 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)。
 
-### 请求 Agent 配置 draw.io MCP
+### 使用前请求 Agent 配置 draw.io MCP
 
 ```text
 请帮我把 Next AI Draw.io MCP 配置到当前项目中。
@@ -86,7 +95,7 @@ https://github.com/DayuanJiang/next-ai-draw-io
 5. 不把本机绝对路径、Token 或秘密写进 Git。
 ```
 
-### 请求 Agent 配置 DBHub
+### 使用前请求 Agent 配置 DBHub
 
 ```text
 请帮我把 DBHub 配置为当前项目的数据库验证 MCP。
@@ -101,6 +110,22 @@ https://github.com/bytebase/dbhub
 4. 使用专用只读数据库账号，并启用 DBHub 只读限制、行数限制和查询超时。
 5. 只验证表、字段、索引、外键和模拟数据，不执行迁移或数据修改。
 6. 配置、日志、进程示例和 Git 中不得出现真实 DSN 或密码。
+```
+
+### 使用前请求 Agent 配置 Prisma
+
+```text
+请帮我在当前PostgreSQL项目中配置Prisma。
+
+上游项目：
+https://github.com/prisma/prisma
+
+要求：
+1. 先阅读官方安装说明并确认当前Node.js与PostgreSQL版本兼容性。
+2. 只安装项目级、固定版本的Prisma CLI与Client，不使用临时latest版本。
+3. 数据库连接串只能通过本地环境变量提供，不写入Schema、日志或Git。
+4. 先完成Schema格式化和静态校验，不执行迁移、reset或Seed。
+5. 任何会修改数据库的命令都必须先说明影响并获得明确确认。
 ```
 
 ## 验证

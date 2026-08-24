@@ -2,7 +2,7 @@
 name: mis-database-realization
 description: Use when an information-system analysis model must be traced from DFD logical stores and complete data dictionaries into PostgreSQL/Prisma, migration evidence, read-only DBHub validation, or implementation-drift records. Trigger on 逻辑存储到Prisma映射, 数据字典与数据库一致性, DBHub只读验证, and 分析设计实现追踪; do not trigger for generic PostgreSQL, migration, seed, or Prisma coding tasks.
 license: Apache-2.0
-compatibility: PostgreSQL and Prisma workflow; optional DBHub MCP configured with database-enforced read-only access.
+compatibility: Requires PostgreSQL, Prisma, and a configured DBHub MCP with database-enforced read-only access.
 metadata:
   author: structured-mis-skills
   version: 0.1.0
@@ -43,6 +43,23 @@ metadata:
 - 当前数据库设计、Schema和迁移（若存在）。
 
 缺少关键业务主键、状态含义、金额精度或关系基数时，暂停并询问。
+
+## Gate -1：前置依赖
+
+使用本 Skill 前必须具备并验证：
+
+1. PostgreSQL目标环境；
+2. 项目中锁定版本的Prisma CLI与Client；
+3. 以项目级MCP方式配置的DBHub；
+4. DBHub使用数据库专用只读账号，并启用只读限制、行数限制和查询超时；
+5. Prisma和DBHub均能完成最小连通性检查，且不会输出真实DSN或密码。
+
+上游项目：
+
+- Prisma：https://github.com/prisma/prisma
+- DBHub：https://github.com/bytebase/dbhub
+
+依赖缺失或验证失败时停止本 Skill，只返回相应官方项目链接和安全配置引导。不得在没有DBHub实际查询证据时声称数据库结构已经验证。
 
 ## 必读 References
 
@@ -192,13 +209,13 @@ Seed必须：
 
 命令计划不等于执行证据，绿色CI也不等于数据库结构已经核对。
 
-## DBHub配置策略
+## DBHub依赖策略
 
-本Skill不内置DBHub，也不保存DSN。若环境未配置，引导用户查看：
+本Skill依托DBHub完成实际数据库的只读核对，但不内置DBHub，也不保存DSN。使用前必须按上游文档完成配置：
 
 https://github.com/bytebase/dbhub
 
-配置请求必须包含：项目级配置、固定版本、专用只读账号、DBHub只读限制、行数限制、查询超时和本地秘密来源。不要使用`latest`，不要回退到应用写账号。
+配置请求必须包含：项目级配置、固定版本、专用只读账号、DBHub只读限制、行数限制、查询超时和本地秘密来源。不要使用`latest`，不要回退到应用写账号。最小权限和连通性检查未通过时不得进入Gate 0。
 
 ## 安全停点
 
