@@ -25,4 +25,5 @@ secrets/
 *.tmp
 
 *.png
+*.pdf
 *.zip

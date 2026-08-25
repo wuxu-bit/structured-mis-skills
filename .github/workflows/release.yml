@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+env:
+  DISABLE_TELEMETRY: "1"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22.20.0
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run audit:example
+      - run: npm run scan:portable
+      - run: npm run validate:skills
+      - run: npm run validate:discovery
+      - name: Check tag version
+        run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
+      - name: Package Skills
+        run: |
+          mkdir -p dist
+          git archive --format=zip --prefix=mis-analysis-modeling/ --output=dist/mis-analysis-modeling.zip HEAD:skills/mis-analysis-modeling
+          git archive --format=zip --prefix=mis-database-realization/ --output=dist/mis-database-realization.zip HEAD:skills/mis-database-realization
+          cd dist
+          sha256sum *.zip > SHA256SUMS
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/* --verify-tag --generate-notes --title "Structured MIS Skills $GITHUB_REF_NAME"

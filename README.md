@@ -6,13 +6,13 @@
 [![skills.sh](https://skills.sh/b/wuxu-bit/structured-mis-skills)](https://skills.sh/wuxu-bit/structured-mis-skills)
 [![Validate](https://github.com/wuxu-bit/structured-mis-skills/actions/workflows/validate.yml/badge.svg)](https://github.com/wuxu-bit/structured-mis-skills/actions/workflows/validate.yml)
 
-Structured MIS Skills 是一套专门面向信息系统分析与设计的 Agent Skills，源自于合肥工业大学管理学院（现更名为管理与智能科学学院（智能商学院））的信息系统分析与设计课程及配套课程设计。该课程及配套课程设计是信息管理与信息系统专业（它很可能即将改名）的核心课程，管科方向的其他专业也有开设这一课程。其课程设计实验中复杂的图像绘制要求和数据库后端配置或将成为同学们AI工作流的巨大阻碍，特此开源个人利用Agent工具实现的相关配置便于管院相关专业的同学使用并速通该课设实验，也鼓励各位在实践中学习熟悉先进的Agent工具，同时也欢迎MIS相关领域的同学或同行借鉴使用或提供宝贵意见。
+Structured MIS Skills 是一套专门面向信息系统分析与设计的 Agent Skills，源自合肥工业大学管理学院（现管理与智能科学学院〔智能商学院〕）的信息系统分析与设计课程及配套课程设计。该课程及配套课程设计是信息管理与信息系统专业的核心课程，管理科学与工程相关专业也有开设。课程设计中复杂的图表绘制要求和数据库后端配置可能成为同学们使用 AI 工作流的障碍，特此开源个人使用 Agent 工具整理的相关配置，供学院相关专业同学完成课设实验时参考，也鼓励大家在实践中熟悉 Agent 工具，欢迎 MIS 相关领域的同学或同行借鉴并提出意见。
 
-当前版本下，项目中主要有2个skill，均需要自主配置并提供大模型API。其一主要面向信息系统结构化分析，能够在既有需求分析的基础上，完成业务流程图（TFD）、数据流程图（DFD）、数据字典三者逻辑连贯的绘制与生成，主要基于drawio(学术绘图工具)和相关开源mcp并对信息系统分析给出特定规范，结果会输出.drawio工程文件，可以手动核查并二次调整。其二主要面向信息系统实现的数据库后端代码实现与部署，现主要基于开源的dbhub MCP，可方便同学们无需使用sql图形化工具即可完成相关实验要求，但亟待完善更多的实现路径。
+当前版本包含两个 Skill。`mis-analysis-modeling` 面向信息系统结构化分析，在既有需求基础上建立相互一致的业务流程图（TFD）、数据流程图（DFD）和数据字典，并通过 Next AI Draw.io MCP 输出可核查、可继续编辑的 `.drawio` 工程文件。`mis-database-realization` 面向逻辑数据模型到 PostgreSQL/Prisma 实现的追踪、迁移审查和 DBHub 只读验证，不替代完整的后端业务开发或生产部署。
 
 两个Skill遵循开放的[Agent Skills规范](https://agentskills.io/specification)，可以安装到OpenCode、Claude Code、Codex、Cursor及其他兼容Agent Skills的客户端。
 
-本仓库不附带模型 API key、数据库凭据或第三方 MCP 服务。两个 Skill 依托下列上游项目运行，使用对应 Skill 前必须先按上游文档完成配置；本仓库只提供配置引导，不复制第三方代码或大模型API。
+本仓库不附带模型 API key、数据库凭据或第三方 MCP 服务。两个 Skill 依托下列上游项目运行，使用对应 Skill 前必须先按上游文档完成配置；本仓库只提供配置引导，不复制第三方代码或秘密。Next AI Draw.io MCP 和 DBHub 本身不要求额外的大模型 API key，大模型能力由安装 Skill 的 Agent 客户端提供。
 
 ## Skills
 
@@ -32,6 +32,8 @@ Structured MIS Skills 是一套专门面向信息系统分析与设计的 Agent 
 | `mis-database-realization` | [prisma/prisma](https://github.com/prisma/prisma)、PostgreSQL、[bytebase/dbhub](https://github.com/bytebase/dbhub) | 定义和迁移数据库，并通过只读 MCP 核对实际结构与数据 |
 
 依赖未配置，或最小连通性测试未通过时，Skill 必须停止在前置检查阶段。不得把只完成的文字规划描述成已经生成图表或已经验证数据库。
+
+通用配置流程、固定版本示例和最小连通性检查见[`docs/configuration-guide.md`](docs/configuration-guide.md)。
 
 ## 快速开始
 
@@ -71,6 +73,17 @@ npx skills add wuxu-bit/structured-mis-skills --all
 ```bash
 npx skills use wuxu-bit/structured-mis-skills@mis-analysis-modeling
 ```
+
+### Release 安装包
+
+每个正式版本同时提供两个可独立安装的 Skill 压缩包和 SHA-256 校验文件。Skills CLI 仍以仓库安装为首选；Release 适合固定版本归档、人工下载或直接从压缩包安装：
+
+```bash
+npx skills add https://github.com/wuxu-bit/structured-mis-skills/releases/latest/download/mis-analysis-modeling.zip
+npx skills add https://github.com/wuxu-bit/structured-mis-skills/releases/latest/download/mis-database-realization.zip
+```
+
+完整版本记录和资产见[Releases](https://github.com/wuxu-bit/structured-mis-skills/releases)。维护者发布流程见[`docs/releasing.md`](docs/releasing.md)。
 
 ### 主流平台
 
@@ -131,37 +144,19 @@ npm test
 
 详细归属见 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)。
 
-### 使用前请求 Agent 配置 draw.io MCP
+## 配置引导
 
-```text
-请帮我根据GitHub链接把 Next AI Draw.io MCP 配置到当前项目中。
-https://github.com/DayuanJiang/next-ai-draw-io
+安装 Skill 后，还需要在当前 Agent 客户端中配置对应的 MCP 和项目依赖。不同客户端的配置文件位置与字段会变化，因此本仓库提供通用、安全的配置模型，并要求实施前核对上游最新文档：
 
-```
+- Next AI Draw.io MCP：固定包版本、完成最小建图与 `.drawio` 导出测试。
+- DBHub：从环境变量读取 DSN，同时启用数据库账号只读、工具只读、最大返回行数和查询超时。
+- Prisma：与现有项目的 Node.js、PostgreSQL 和锁文件兼容，任何迁移、Seed 或重置操作先取得确认。
 
-### 使用前请求 Agent 配置 DBHub
+配置示例、通用请求模板及验收清单见[`docs/configuration-guide.md`](docs/configuration-guide.md)。
 
-```text
-请帮我根据GitHub链接把 DBHub 配置为当前项目的数据库验证 MCP。
-https://github.com/bytebase/dbhub
+## 课程教材
 
-```
-
-### 使用前请求 Agent 配置 Prisma
-
-```text
-请帮我在当前PostgreSQL项目中配置Prisma。
-
-上游项目：
-https://github.com/prisma/prisma
-
-要求：
-1. 先阅读官方安装说明并确认当前Node.js与PostgreSQL版本兼容性。
-2. 只安装项目级、固定版本的Prisma CLI与Client，不使用临时latest版本。
-3. 数据库连接串只能通过本地环境变量提供，不写入Schema、日志或Git。
-4. 先完成Schema格式化和静态校验，不执行迁移、reset或Seed。
-5. 任何会修改数据库的命令都必须先说明影响并获得明确确认。
-```
+本项目的结构化分析与设计规则参考《信息系统分析与开发技术（第3版）》等课程资料。书目信息、相关章节和使用边界见[`docs/course-textbook.md`](docs/course-textbook.md)。教材版权页明确禁止未经许可复制部分或全部内容，因此本仓库及 Release 不分发教材 PDF 或全文 Markdown；Apache-2.0 许可证也不覆盖该教材。
 
 ## 验证
 
