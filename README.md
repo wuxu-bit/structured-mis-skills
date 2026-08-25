@@ -6,11 +6,13 @@
 [![skills.sh](https://skills.sh/b/wuxu-bit/structured-mis-skills)](https://skills.sh/wuxu-bit/structured-mis-skills)
 [![Validate](https://github.com/wuxu-bit/structured-mis-skills/actions/workflows/validate.yml/badge.svg)](https://github.com/wuxu-bit/structured-mis-skills/actions/workflows/validate.yml)
 
-Structured MIS Skills 是一套面向信息系统分析、课程设计和原型实施的 Agent Skills。它把需求、业务流程图（TFD）、数据流程图（DFD）、完整数据字典、Prisma Schema、数据库迁移和只读验证组织成一条可追踪的工作链。
+Structured MIS Skills 是一套专门面向信息系统分析与设计的 Agent Skills，源自于合肥工业大学管理学院（现更名为管理与智能科学学院（智能商学院））的信息系统分析与设计课程及配套课程设计。该课程及配套课程设计是信息管理与信息系统专业（它很可能即将改名）的核心课程，管科方向的其他专业也有开设这一课程。其课程设计实验中复杂的图像绘制要求和数据库后端配置或将成为同学们AI工作流的巨大阻碍，特此开源个人利用Agent工具实现的相关配置便于管院相关专业的同学使用并速通该课设实验，也鼓励各位在实践中学习熟悉先进的Agent工具，同时也欢迎MIS相关领域的同学或同行借鉴使用或提供宝贵意见。
 
-两个Skill遵循开放的[Agent Skills规范](https://agentskills.io/specification)，不绑定OpenCode。可以安装到OpenCode、Claude Code、Codex、Cursor、Gemini CLI、GitHub Copilot、Cline、OpenClaw及其他兼容Agent Skills的客户端。Skill可以跨平台安装；完整执行仍要求客户端支持并配置对应MCP依赖。
+当前版本下，项目中主要有2个skill，均需要自主配置并提供大模型API。其一主要面向信息系统结构化分析，能够在既有需求分析的基础上，完成业务流程图（TFD）、数据流程图（DFD）、数据字典三者逻辑连贯的绘制与生成，主要基于drawio(学术绘图工具)和相关开源mcp并对信息系统分析给出特定规范，结果会输出.drawio工程文件，可以手动核查并二次调整。其二主要面向信息系统实现的数据库后端代码实现与部署，现主要基于开源的dbhub MCP，可方便同学们无需使用sql图形化工具即可完成相关实验要求，但亟待完善更多的实现路径。
 
-本仓库不附带模型 API key、数据库凭据或第三方 MCP 服务。两个 Skill 依托下列上游项目运行，使用对应 Skill 前必须先按上游文档完成配置；本仓库只提供配置引导，不复制第三方代码或秘密。
+两个Skill遵循开放的[Agent Skills规范](https://agentskills.io/specification)，可以安装到OpenCode、Claude Code、Codex、Cursor及其他兼容Agent Skills的客户端。
+
+本仓库不附带模型 API key、数据库凭据或第三方 MCP 服务。两个 Skill 依托下列上游项目运行，使用对应 Skill 前必须先按上游文档完成配置；本仓库只提供配置引导，不复制第三方代码或大模型API。
 
 ## Skills
 
@@ -21,14 +23,6 @@ Structured MIS Skills 是一套面向信息系统分析、课程设计和原型�
 
 两个 Skill 可以独立使用。若串联使用，前一个 Skill 生成的 `analysis-model.json` 是后一个 Skill 的输入契约。
 
-## 核心区别
-
-- 先建立语义模型，再生成 draw.io XML，不把自然语言机械翻译成图。
-- TFD、DFD 和数据字典共同来自一个分析基线，而不是分别编写。
-- 完整数据字典是正式源，报告节选只是派生产物。
-- 父子 DFD 平衡按端点、方向和数据流语义核对，不用“看起来差不多”代替验证。
-- Prisma 负责定义和迁移数据库；DBHub 只用于受控、只读的结构与数据验证。
-- 任何设计与实现偏差都进入差异记录，不静默修改事实。
 
 ## 前置依赖
 
@@ -140,34 +134,17 @@ npm test
 ### 使用前请求 Agent 配置 draw.io MCP
 
 ```text
-请帮我把 Next AI Draw.io MCP 配置到当前项目中。
-
-上游项目：
+请帮我根据GitHub链接把 Next AI Draw.io MCP 配置到当前项目中。
 https://github.com/DayuanJiang/next-ai-draw-io
 
-要求：
-1. 先阅读官方安装说明并确认当前版本和 Node.js 要求。
-2. 只创建项目级配置，不修改用户级全局配置。
-3. 不要求、不生成、不记录任何模型 API key。
-4. 配置完成后生成一张最小测试图并导出 .drawio。
-5. 不把本机绝对路径、Token 或秘密写进 Git。
 ```
 
 ### 使用前请求 Agent 配置 DBHub
 
 ```text
-请帮我把 DBHub 配置为当前项目的数据库验证 MCP。
-
-上游项目：
+请帮我根据GitHub链接把 DBHub 配置为当前项目的数据库验证 MCP。
 https://github.com/bytebase/dbhub
 
-要求：
-1. 先阅读官方安装和只读配置说明。
-2. 使用项目级 MCP 配置和经过测试的固定版本，不使用 latest。
-3. 数据库连接串只能从本地环境变量读取。
-4. 使用专用只读数据库账号，并启用 DBHub 只读限制、行数限制和查询超时。
-5. 只验证表、字段、索引、外键和模拟数据，不执行迁移或数据修改。
-6. 配置、日志、进程示例和 Git 中不得出现真实 DSN 或密码。
 ```
 
 ### 使用前请求 Agent 配置 Prisma
