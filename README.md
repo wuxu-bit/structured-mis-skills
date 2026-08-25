@@ -1,4 +1,6 @@
 # Structured MIS Skills
+<img width="8859" height="2188" alt="工大最新logo1" src="https://github.com/user-attachments/assets/4c47f841-68e2-4a27-a2c0-ee1a95887d11" />
+
 
 > Turn information-system requirements into traceable TFD, DFD, data dictionaries, and database evidence instead of disconnected diagrams and schemas.
 
