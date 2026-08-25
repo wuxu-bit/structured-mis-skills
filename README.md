@@ -156,7 +156,7 @@ npm test
 
 ## 课程教材
 
-本项目的结构化分析与设计规则参考《信息系统分析与开发技术（第3版）》等课程资料。书目信息、相关章节和使用边界见[`docs/course-textbook.md`](docs/course-textbook.md)。教材版权页明确禁止未经许可复制部分或全部内容，因此本仓库及 Release 不分发教材 PDF 或全文 Markdown；Apache-2.0 许可证也不覆盖该教材。
+本项目的结构化分析与设计规则参考《信息系统分析与开发技术（第3版）》（ISBN 978-7-121-47512-2）等课程资料。书目信息、相关章节和使用边界见[`docs/course-textbook.md`](docs/course-textbook.md)。
 
 ## 验证
 
