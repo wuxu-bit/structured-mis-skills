@@ -159,7 +159,7 @@ npm test
 ## 课程教材
 
 本项目的结构化分析与设计规则参考《信息系统分析与开发技术（第3版）》（ISBN 978-7-121-47512-2）等课程资料。书目信息、相关章节和使用边界见[`docs/course-textbook.md`](docs/course-textbook.md)。
-可自行通过zlib获取
+可自行通过zlib获取 https://getzlib.com/zh
 <img width="869" height="567" alt="PixPin_2026-08-27_14-43-27" src="https://github.com/user-attachments/assets/c0c0e66c-a701-4d44-8cb0-510499e088f4" />
 
 
